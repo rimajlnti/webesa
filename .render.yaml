@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: webesa
+    env: docker
+    plan: free
+    branch: master
+    dockerfilePath: ./Dockerfile
+    buildCommand: ""
+    startCommand: ""
