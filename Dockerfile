@@ -1,34 +1,34 @@
-FROM php:8.2-apache
+# Gunakan PHP 8.1 dengan Apache
+FROM php:8.1-apache
 
-# Install dependencies
+# Install ekstensi PHP yang dibutuhkan Laravel
 RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    zip \
-    curl \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    && docker-php-ext-install pdo_mysql zip mbstring exif pcntl bcmath gd
+    libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
-# Enable Apache rewrite module
+# Aktifkan mod_rewrite Apache (penting untuk Laravel routing)
 RUN a2enmod rewrite
 
-# Copy Laravel project
+# Salin file project ke direktori kerja di container
 COPY . /var/www/html
+
+# Ubah permission
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html/storage
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Laravel dependencies
-RUN composer install --optimize-autoloader --no-dev
+# Install dependensi Laravel
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Expose port
+# Copy file environment jika ada
+COPY .env.example .env
+
+# Generate app key
+RUN php artisan key:generate
+
 EXPOSE 80
