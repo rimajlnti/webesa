@@ -1,33 +1,21 @@
-FROM php:8.1-apache
+# Gunakan image PHP dengan Apache
+FROM php:8.2-apache
 
-# Install dependencies
+# Install ekstensi Laravel dan PHP yang dibutuhkan
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip git curl libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    libzip-dev zip unzip \
+    libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
 
-# Enable Apache mod_rewrite
+# Aktifkan mod_rewrite Apache
 RUN a2enmod rewrite
 
-# Copy project files
+# Salin file Laravel ke dalam image
 COPY . /var/www/html
 
-# Set correct permissions
+# Atur permission
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage
+    && chmod -R 755 /var/www/html
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install Laravel dependencies
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
-# Copy default .env if needed
-COPY .env.example .env
-
-# Generate key
-RUN php artisan key:generate
-
-EXPOSE 80
+# Copy default Laravel virtual host config
+COPY ./000-default.conf /etc/apache2/sites-available/000-default.conf
