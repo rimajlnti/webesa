@@ -1,0 +1,46 @@
+
+@import "~@fortawesome/fontawesome-free/css/all.css";
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+body {
+    background-color: #f8f9fa;
+}
+
+.table th {
+    background-color: #343a40;
+    color: white;
+}
+
+.btn-primary, .btn-danger {
+    padding: 5px 10px;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    height: 100%;
+    z-index: 1050; /* Pastikan berada di depan konten */
+}
+.chart-area {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+.chart-area canvas {
+    width: 100% !important;
+    height: auto !important;
+}
+.table-responsive {
+    overflow-x: auto; /* Membuat tabel bisa digulir secara horizontal */
+}
+
+thead.custom-bright {
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Pastikan header tetap di atas data tabel */
+    background-color: #2a43d3; /* Menjaga warna header tetap jelas */
+    color: #d1dbdd; /* Warna teks header */
+}
